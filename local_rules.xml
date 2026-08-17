@@ -1,0 +1,21 @@
+<group name="local,syslog,audit,">
+  <!--
+    Rule 101900 - Network Connection Discovery (ss execution)
+    Detects execution of "ss", used to enumerate active network connections
+    and listening ports.
+
+    DEPENDENCY: Requires execve auditing:
+     -a always,exit -F arch=b64 -S execve -k exec_activity
+    and Wazuh configured to read /var/log/audit/audit.log
+  -->
+  <rule id="101900" level="7">
+    <if_sid>80700</if_sid>
+    <field name="audit.key">exec_activity</field>
+    <field name="audit.command">ss</field>
+    <description>Possible reconnaissance: active network connections listed (ss)</description>
+    <mitre>
+      <id>T1049</id>
+    </mitre>
+    <group>discovery,pci_dss_10.2.7,</group>
+  </rule>
+</group>
